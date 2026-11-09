@@ -23,7 +23,7 @@ jobs:
       # gradle-wrapper.jar is a binary file. If it is not in the repository yet, create it here.
       - name: Create Gradle wrapper if missing
         if: ${{ hashFiles('gradle/wrapper/gradle-wrapper.jar') == '' }}
-        run: gradle wrapper --gradle-version 9.2.0
+        run: gradle wrapper --gradle-version 9.2.0 --no-validate-url
 
       - name: Make gradlew executable
         run: chmod +x gradlew
