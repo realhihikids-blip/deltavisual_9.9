@@ -77,16 +77,16 @@ public final class CharacterAnimations extends Module {
             angle = 360f * turns * e * dir;
         }
         float yaw = startYaw + angle;
-        p.prevBodyYaw = p.bodyYaw;                         // the render interpolates between these two values
-        p.bodyYaw = yaw;
-        p.prevHeadYaw = p.headYaw;
-        p.headYaw = yaw;
+     //   p.prevBodyYaw = p.bodyYaw;                         // the render interpolates between these two values
+          p.bodyYaw = yaw;
+        //  p.prevHeadYaw = p.headYaw;
+         p.headYaw = yaw;
         if (++tick > length) finish(p);
     }
 
     private void finish(ClientPlayerEntity p) {
         playing = false;
         float y = MathHelper.wrapDegrees(p.getYaw());
-        p.bodyYaw = y; p.prevBodyYaw = y; p.headYaw = y; p.prevHeadYaw = y;
+        p.bodyYaw = y; p.headYaw = y;
     }
 }
