@@ -56,6 +56,9 @@ public final class Modules {
     public static Friends FRIENDS;
     public static CleanView CLEAN_VIEW;
     public static NoFire NO_FIRE;
+    public static FpsBoost FPS_BOOST;
+    public static ChinaHat CHINA_HAT;
+    public static HitBubbles HIT_BUBBLES;
     public static CustomFog FOG;
     public static LightTint LIGHT_TINT;
     public static JumpCircles JUMP_CIRCLES;
@@ -91,6 +94,8 @@ public final class Modules {
         TARGET_ESP = reg(new TargetEsp());
         KILL = reg(new KillEffect());
         HIT_FX = reg(new HitEffects());
+        HIT_BUBBLES = reg(new HitBubbles());
+        CHINA_HAT = reg(new ChinaHat());
         TOTEM_SOUL = reg(new TotemSoul());
         PROJECTILE_FX = reg(new ProjectileFx());
         HITBOX_FILL = reg(new HitboxFill());
@@ -106,6 +111,7 @@ public final class Modules {
         AIR_PARTICLES = reg(new AirParticles());
         CLEAN_VIEW = reg(new CleanView());
         NO_FIRE = reg(new NoFire());
+        FPS_BOOST = reg(new FpsBoost());
         JUMP_CIRCLES = reg(new JumpCircles());
         EAT_EFFECT = reg(new EatEffect());
         CHAR_ANIM = reg(new CharacterAnimations());
@@ -125,6 +131,7 @@ public final class Modules {
                 TARGET_ESP.onAttack(entity);
                 DAMAGE.onAttack(entity);
                 HIT_FX.onAttack(entity, hit != null ? hit.getPos() : null);
+                HIT_BUBBLES.onAttack(entity, hit != null ? hit.getPos() : null);
                 HIT_SOUNDS.onAttack(entity);
                 TOTEM_SOUL.onAttack(entity);
                 AIR_PARTICLES.onAttack();

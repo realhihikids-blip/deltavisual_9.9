@@ -31,6 +31,12 @@ public final class Gfx {
     public static double camX, camY, camZ;
     public static float rightX, rightY, rightZ, upX, upY, upZ, lookX, lookY, lookZ;
     public static float partial;
+    /** Level of detail 0.3..1: segment counts of rings, bands and spheres are scaled by it (set by FPS Boost). */
+    public static float lod = 1f;
+    /** Soft cap of quads per frame (never above MAX_QUADS_PER_FRAME), set by FPS Boost. */
+    public static int budget = MAX_QUADS_PER_FRAME;
+    /** Modules that call far() skip effects farther than this from the camera (metres); 0 = no limit. */
+    public static double effectDist = 0;
 
     private static final Vector3f TMP = new Vector3f();
     // ribbon / tube scratch
@@ -75,7 +81,14 @@ public final class Gfx {
         vc = null;
     }
 
-    public static boolean hasBudget(int needQuads) { return quads + needQuads < MAX_QUADS_PER_FRAME; }
+    public static boolean hasBudget(int needQuads) { return quads + needQuads < budget; }
+
+    /** True when the point is beyond the effect distance set by FPS Boost (always false when no limit is set). */
+    public static boolean far(double x, double y, double z) {
+        if (effectDist <= 0) return false;
+        double dx = x - camX, dy = y - camY, dz = z - camZ;
+        return dx * dx + dy * dy + dz * dz > effectDist * effectDist;
+    }
 
     public static double distToCamera(double x, double y, double z) {
         double dx = x - camX, dy = y - camY, dz = z - camZ;
@@ -93,7 +106,7 @@ public final class Gfx {
                             double x2, double y2, double z2, int c2,
                             double x3, double y3, double z3, int c3,
                             double x4, double y4, double z4, int c4) {
-        if (vc == null || quads >= MAX_QUADS_PER_FRAME) return;
+        if (vc == null || quads >= budget) return;
         quads++;
         vtx(x1, y1, z1, c1); vtx(x2, y2, z2, c2); vtx(x3, y3, z3, c3); vtx(x4, y4, z4, c4);
     }
@@ -275,7 +288,7 @@ public final class Gfx {
     public static void sphere(double cx, double cy, double cz, double rx, double ry, double rz, int lat, int lon,
                               int cTop, int cBot, double wobble, double wobbleTime) {
         if (vc == null || rx <= 0 || ry <= 0 || rz <= 0) return;
-        lat = Math.max(3, Math.min(32, lat)); lon = Math.max(4, Math.min(48, lon));
+        lat = Math.max(3, Math.min(32, Math.round(lat * lod))); lon = Math.max(4, Math.min(48, Math.round(lon * lod)));
         if (!hasBudget(lat * lon)) return;
         spCx = cx; spCy = cy; spCz = cz; spRx = rx; spRy = ry; spRz = rz; spAmp = wobble; spTime = wobbleTime;
         spTop = cTop; spBot = cBot;
@@ -296,7 +309,7 @@ public final class Gfx {
     public static void annulus(double cx, double cy, double cz, double ux, double uy, double uz, double vx, double vy, double vz,
                                double r0, double r1, double a0, double sweep, int segs, int cInner, int cOuter) {
         if (vc == null || sweep == 0) return;
-        segs = Math.max(2, Math.min(96, (int) Math.ceil(segs * Math.min(1.0, Math.abs(sweep) / TAU) + 1)));
+        segs = Math.max(2, Math.min(96, (int) Math.ceil(segs * lod * Math.min(1.0, Math.abs(sweep) / TAU) + 1)));
         if (!hasBudget(segs)) return;
         double step = sweep / segs;
         for (int i = 0; i < segs; i++) {
@@ -317,7 +330,7 @@ public final class Gfx {
     /** Vertical cylinder wall (a ring seen from the side). */
     public static void band(double cx, double cy, double cz, double r, double y0, double y1, int segs, int cBottom, int cTop) {
         if (vc == null) return;
-        segs = Math.max(6, Math.min(96, segs));
+        segs = Math.max(6, Math.min(96, Math.round(segs * lod)));
         if (!hasBudget(segs)) return;
         for (int i = 0; i < segs; i++) {
             double a = TAU * i / segs, b = TAU * (i + 1) / segs;

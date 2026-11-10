@@ -24,7 +24,7 @@ public final class JumpCircles extends Module {
     }
 
     private final Setting.Bool onJump, onLand, fill, glow;
-    private final Setting.Num duration, radius, rings, opacity, flow;
+    private final Setting.Num duration, radius, rings, opacity, flow, width, rise;
     private final Setting.Mode colorMode;
     private final Setting.Color c1, c2;
 
@@ -52,6 +52,8 @@ public final class JumpCircles extends Module {
         flow = add(new Setting.Num("Color Flow Speed", 0.2, 5, 0.1, 1, "x"));
         flow.visibleIf(() -> !colorMode.is("Static"));
         glow = add(new Setting.Bool("Glow", true));
+        width = add(new Setting.Num("Ring Width", 0.5, 3, 0.1, 1.0, "x"));
+        rise = add(new Setting.Num("Rise Height", 0, 1.5, 0.05, 0, " m"));
         for (int i = 0; i < MAX; i++) list[i] = new Ring();
     }
 
@@ -95,9 +97,9 @@ public final class JumpCircles extends Module {
                 if (t <= 0 || t >= 1) continue;
                 double ease = 1.0 - Math.pow(1.0 - t, 3.0);     // fast start, slow end: like a ripple
                 double rad = radius.get() * r.scale * ease * (1.0 - k * 0.22);
-                double w = Math.max(0.03, 0.14 * (1.0 - t) * r.scale);
+                double w = Math.max(0.03, 0.14 * width.get() * (1.0 - t) * r.scale);
                 float fade = (float) Math.pow(1.0 - t, 1.4) * maxA;
-                double y = r.y + 0.03 + k * 0.004;
+                double y = r.y + 0.03 + k * 0.004 + rise.get() * ease;
                 int edge = pal.at(k * 0.25 + t * 0.3, fade);
                 if (fill.get()) {
                     Gfx.ringFlat(r.x, y, r.z, 0.0, rad, 0.0, TAU, 40,
