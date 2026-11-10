@@ -114,6 +114,19 @@ public final class Gfx {
         quad(ax - sx, ay - sy, az - sz, c, ax + sx, ay + sy, az + sz, c, bx + sx, by + sy, bz + sz, c, bx - sx, by - sy, bz - sz, c);
     }
 
+    /**
+     * Soft colour wash over the whole 3D view: one camera-facing quad just in front of the near plane, so it
+     * covers everything drawn before it (terrain, blocks) and is hidden behind nothing. `dist` is in metres.
+     */
+    public static void screenTint(double dist, int argb) {
+        if (vc == null || !hasBudget(1)) return;
+        double hw = dist * 5.5, hh = dist * 3.6;   // wider than any FOV / aspect ratio
+        double cx = camX + lookX * dist, cy = camY + lookY * dist, cz = camZ + lookZ * dist;
+        double rx = rightX * hw, ry = rightY * hw, rz = rightZ * hw, ux = upX * hh, uy = upY * hh, uz = upZ * hh;
+        quad(cx - rx - ux, cy - ry - uy, cz - rz - uz, argb, cx + rx - ux, cy + ry - uy, cz + rz - uz, argb,
+             cx + rx + ux, cy + ry + uy, cz + rz + uz, argb, cx - rx + ux, cy - ry + uy, cz - rz + uz, argb);
+    }
+
     /** Axis aligned box, six faces, flat colour. */
     public static void boxFill(double x1, double y1, double z1, double x2, double y2, double z2, int c) {
         quad(x1, y1, z1, c, x2, y1, z1, c, x2, y1, z2, c, x1, y1, z2, c);

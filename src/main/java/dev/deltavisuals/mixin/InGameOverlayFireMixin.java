@@ -12,7 +12,7 @@ public abstract class InGameOverlayFireMixin {
     @Inject(method = "renderFireOverlay", at = @At("HEAD"), cancellable = true, require = 0)
     private static void deltaVisuals$noFire(CallbackInfo ci) {
         try {
-            if (Modules.CLEAN_VIEW != null && Modules.CLEAN_VIEW.noFire()) ci.cancel();
+            if ((Modules.CLEAN_VIEW != null && Modules.CLEAN_VIEW.noFire()) || (Modules.NO_FIRE != null && Modules.NO_FIRE.isEnabled())) ci.cancel();
         } catch (Throwable ignored) { }
     }
 }
