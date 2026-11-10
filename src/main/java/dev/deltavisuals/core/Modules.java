@@ -55,6 +55,9 @@ public final class Modules {
     public static HitboxFill HITBOX_FILL;
     public static Friends FRIENDS;
     public static CleanView CLEAN_VIEW;
+    public static NoFire NO_FIRE;
+    public static CustomFog FOG;
+    public static LightTint LIGHT_TINT;
     public static JumpCircles JUMP_CIRCLES;
     public static EatEffect EAT_EFFECT;
     public static CharacterAnimations CHAR_ANIM;
@@ -82,6 +85,8 @@ public final class Modules {
         SKY_CYCLE = reg(new SkyCycle());
         WORLD_TIME = reg(new WorldTime());    // after Custom Sky: its dome is only drawn when no Custom Sky preset is on
         SKY_COLOR = reg(new SkyColor());      // last of the sky modules: a see-through tint over whatever sky is shown
+        FOG = reg(new CustomFog());           // after the sky modules: a haze over the sky, under every other effect
+        LIGHT_TINT = reg(new LightTint());    // colour wash over terrain; effects registered below stay untinted
         NIGHT_VISION = reg(new NightVision());
         TARGET_ESP = reg(new TargetEsp());
         KILL = reg(new KillEffect());
@@ -100,6 +105,7 @@ public final class Modules {
         ITEM_MOTION = reg(new ItemMotion());
         AIR_PARTICLES = reg(new AirParticles());
         CLEAN_VIEW = reg(new CleanView());
+        NO_FIRE = reg(new NoFire());
         JUMP_CIRCLES = reg(new JumpCircles());
         EAT_EFFECT = reg(new EatEffect());
         CHAR_ANIM = reg(new CharacterAnimations());
